@@ -22,6 +22,8 @@
                     "0x112a881": "0x9502f9000000000"
                 },
                 "ecip1017EraRounds": "0x1e8480",
+                "ecbp1100Transition": "0x2450E0",
+                "ecbp1100DeactivateTransition": "0x9EB100",
                 "ecip1099Transition": "0x2673c0",
                 "eip3651Transition": "0x97ee88",
                 "eip3855Transition": "0x97ee88",

@@ -137,6 +137,8 @@ public class EthereumClassicPlugin(
                 p.Ecip1041Transition,
                 p.OlympiaTransition,
                 p.OlympiaTreasuryAddress,
+                p.Ecbp1100Transition,
+                p.Ecbp1100DeactivateTransition,
                 miningConfig.Mode,
                 messConfig.Enabled);
         }
@@ -151,6 +153,8 @@ public class EthereumClassicModule(
     long? ecip1041Transition,
     long? olympiaTransition,
     Address? olympiaTreasuryAddress,
+    long? ecbp1100Transition,
+    long? ecbp1100DeactivateTransition,
     EtcMiningMode miningMode,
     bool messEnabled) : Module
 {
@@ -161,7 +165,11 @@ public class EthereumClassicModule(
             builder.RegisterType<EtcBlockTree>()
                 .As<IBlockTree>()
                 .AsSelf()
-                .SingleInstance();
+                .SingleInstance()
+                .OnActivating(e => e.Instance.SetMessBlockNumbers(
+                    ecbp1100Transition,
+                    ecbp1100DeactivateTransition,
+                    olympiaTransition));
         }
 
         builder.Register(ctx => new Etchash(ctx.Resolve<ILogManager>(), ecip1099Transition))

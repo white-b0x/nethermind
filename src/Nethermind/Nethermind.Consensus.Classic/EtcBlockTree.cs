@@ -36,17 +36,27 @@ internal class EtcBlockTree(
         logManager, genesisBlockNumber)
 {
     private volatile bool _messEnabled;
+    private long? _messActivateBlock;
+    private long? _messDeactivateBlock;
+    private long? _messOlympiaBlock;
 
     public void EnableMess(bool enable) => _messEnabled = enable;
 
     public bool IsMessEnabled => _messEnabled;
+
+    public void SetMessBlockNumbers(long? activateBlock, long? deactivateBlock, long? olympiaBlock)
+    {
+        _messActivateBlock = activateBlock;
+        _messDeactivateBlock = deactivateBlock;
+        _messOlympiaBlock = olympiaBlock;
+    }
 
     protected override bool HeadImprovementRequirementsSatisfied(BlockHeader header)
     {
         if (!base.HeadImprovementRequirementsSatisfied(header))
             return false;
 
-        if (!_messEnabled)
+        if (!_messEnabled || !IsMessActiveAtBlock(header.Number))
             return true;
 
         BlockHeader? currentHead = Head?.Header;
@@ -78,6 +88,19 @@ internal class EtcBlockTree(
             return false;
         }
 
+        return true;
+    }
+
+    /// <remarks>
+    /// Active in [_messActivateBlock, _messDeactivateBlock) and again in [_messOlympiaBlock, ∞).
+    /// Returns true unconditionally when no activation block is configured (no block-number gating needed).
+    /// </remarks>
+    private bool IsMessActiveAtBlock(long blockNumber)
+    {
+        if (_messActivateBlock is null || blockNumber < _messActivateBlock.Value)
+            return false;
+        if (_messDeactivateBlock is not null && blockNumber >= _messDeactivateBlock.Value)
+            return _messOlympiaBlock is not null && blockNumber >= _messOlympiaBlock.Value;
         return true;
     }
 

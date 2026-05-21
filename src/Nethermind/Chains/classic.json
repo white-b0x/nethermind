@@ -30,6 +30,8 @@
                 "dieHardTransition": "0x2dc6c0",
                 "gothamTransition": "0x4c4b40",
                 "ecip1041Transition": "0x5a06e0",
+                "ecbp1100Transition": "0xADA520",
+                "ecbp1100DeactivateTransition": "0x125BB50",
                 "ecip1099Transition": "0xb28720",
                 "eip3651Transition": "0x125bb50",
                 "eip3855Transition": "0x125bb50",

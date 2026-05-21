@@ -44,6 +44,12 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
     /// <summary>Block at which ECIP-1041 activates (bomb removed). ETC mainnet: 5,900,000. Null = not applicable.</summary>
     public long? Ecip1041Transition { get; set; }
 
+    /// <summary>Block at which ECBP-1100 MESS activates. ETC mainnet: 11,380,000. Mordor: 2,380,000.</summary>
+    public long? Ecbp1100Transition { get; set; }
+
+    /// <summary>Block at which ECBP-1100 MESS deactivates. ETC mainnet: 19,250,000. Mordor: 10,400,000.</summary>
+    public long? Ecbp1100DeactivateTransition { get; set; }
+
     /// <summary>Block at which Olympia activates (ECIP-1111/1112/1121). Sentinel: 1e18 (not yet scheduled).</summary>
     public long? OlympiaTransition { get; set; }
 
