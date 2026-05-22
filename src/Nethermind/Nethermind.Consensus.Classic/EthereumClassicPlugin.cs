@@ -15,6 +15,7 @@ using Nethermind.Consensus.Classic.Config;
 using Nethermind.Consensus.Classic.Mining;
 using Nethermind.Consensus.Ethash;
 using Nethermind.Consensus.Rewards;
+using Nethermind.Consensus;
 using Nethermind.Core;
 using Nethermind.Core.Specs;
 using Nethermind.Crypto;
@@ -22,6 +23,7 @@ using Nethermind.JsonRpc.Modules;
 using Nethermind.KeyStore.Config;
 using Nethermind.Logging;
 using Nethermind.Network.Config;
+using Nethermind.Network.Contract.P2P;
 using Nethermind.Specs.ChainSpecStyle;
 using Nethermind.Synchronization.Peers;
 
@@ -88,6 +90,11 @@ public class EthereumClassicPlugin(
                 _messMonitor.Start();
             }
         }
+
+        // ETH68 is in DefaultCapabilities. Also advertise ETH69 so ETC connects to modern peers
+        // (Besu, Fukuii, etc.). Eth69ProtocolHandler detects PoW via SealEngineType.Etchash and
+        // resolves TotalDifficulty via 3-tier lookup — identical to Besu/Fukuii's approach.
+        _nethermindApi!.ProtocolsManager!.AddSupportedCapability(new(Protocol.Eth, 69));
 
         return Task.CompletedTask;
     }
@@ -199,6 +206,10 @@ public class EthereumClassicModule(
                 ctx.Resolve<IEthash>(),
                 ctx.Resolve<ITimestamper>()))
             .As<ISealValidator>()
+            .SingleInstance();
+
+        builder.Register(_ => new OlympiaGasLimitCalculator(olympiaTransition))
+            .As<IGasLimitCalculator>()
             .SingleInstance();
 
         if (miningMode == EtcMiningMode.Remote)

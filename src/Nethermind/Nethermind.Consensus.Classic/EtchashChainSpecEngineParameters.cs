@@ -109,6 +109,10 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
         {
             spec.IsEip1559Enabled = false;
             spec.IsEip3198Enabled = false;
+            // Reset elasticity multiplier so Eip1559GasLimitAdjuster does not double the
+            // parent gas limit at the Mystique fork block. ETC runs 8M gas limit blocks;
+            // the multiplier is only meaningful once EIP-1559 fee mechanics activate at Olympia.
+            spec.ElasticityMultiplier = 1;
         }
     }
 }
