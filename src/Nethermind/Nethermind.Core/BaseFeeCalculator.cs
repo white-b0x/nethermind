@@ -46,7 +46,7 @@ public sealed class DefaultBaseFeeCalculator : IBaseFeeCalculator
             else
             {
                 long gasDelta = parentGasTarget - parent.GasUsed;
-                UInt256 feeDelta = parentBaseFee * (UInt256)gasDelta / (UInt256)parentGasTarget / specFor1559.BaseFeeMaxChangeDenominator;
+                UInt256 feeDelta = UInt256.Max(parentBaseFee * (UInt256)gasDelta / (UInt256)parentGasTarget / specFor1559.BaseFeeMaxChangeDenominator, UInt256.One);
                 expectedBaseFee = UInt256.Max(parentBaseFee - feeDelta, 0);
             }
 

@@ -91,6 +91,29 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
         chainSpec.GrayGlacierBlockNumber = null;
         chainSpec.HomesteadBlockNumber = HomesteadTransition;
         chainSpec.DaoForkBlockNumber = DaoHardforkTransition;
+
+        // All Olympia-era EIPs (ECIP-1121) activate at the same block as OlympiaTransition.
+        // Propagating here means only olympiaTransition needs updating in the chainspec JSON
+        // when the activation block is finalized — individual eip*Transition entries are
+        // intentionally omitted from the params section of each chainspec.
+        if (OlympiaTransition is not null)
+        {
+            long olympia = OlympiaTransition.Value;
+            chainSpec.Parameters.Eip1559Transition = olympia;
+            chainSpec.Parameters.Eip3198Transition = olympia;
+            chainSpec.Parameters.Eip5656Transition = olympia;
+            chainSpec.Parameters.Eip1153Transition = olympia;
+            chainSpec.Parameters.Eip6780Transition = olympia;
+            chainSpec.Parameters.Eip2537Transition = olympia;
+            chainSpec.Parameters.Eip7823Transition = olympia;
+            chainSpec.Parameters.Eip7883Transition = olympia;
+            chainSpec.Parameters.Eip7825Transition = olympia;
+            chainSpec.Parameters.Eip7623Transition = olympia;
+            chainSpec.Parameters.Eip7951Transition = olympia;
+            chainSpec.Parameters.Eip2935Transition = olympia;
+            chainSpec.Parameters.Eip7702Transition = olympia;
+            chainSpec.Parameters.Eip7934Transition = olympia;
+        }
     }
 
     void IChainSpecEngineParameters.ApplyToReleaseSpec(ReleaseSpec spec, long startBlock, ulong? startTimestamp)
@@ -102,17 +125,23 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
         // DifficultyBombDelays in chainspec are only used for Fork ID, not actual difficulty.
         spec.DifficultyBombDelay = 0;
 
-        // On ETC mainnet, eip1559Transition in chainspec.Parameters is set to the Mystique fork block
-        // (14,525,000) for Fork ID purposes only — EIP-1559 fee mechanics were deferred to Olympia.
-        // Suppress EIP-1559 and EIP-3198 (BASEFEE opcode) until OlympiaTransition.
+        // EIP-1559 (ECIP-1111) and EIP-3198 (BASEFEE opcode) activate at Olympia, not earlier.
+        // Suppress them until OlympiaTransition and hold ElasticityMultiplier at 1 so that
+        // Eip1559GasLimitAdjuster does not double the gas limit at any pre-Olympia fork block.
         if (OlympiaTransition is not null && startBlock < OlympiaTransition.Value)
         {
             spec.IsEip1559Enabled = false;
             spec.IsEip3198Enabled = false;
-            // Reset elasticity multiplier so Eip1559GasLimitAdjuster does not double the
-            // parent gas limit at the Mystique fork block. ETC runs 8M gas limit blocks;
-            // the multiplier is only meaningful once EIP-1559 fee mechanics activate at Olympia.
             spec.ElasticityMultiplier = 1;
+        }
+
+        // Suppress the one-shot 2× gas limit doubling that Eip1559GasLimitAdjuster applies
+        // at Eip1559TransitionBlock. ETC Olympia drives 8M→60M via 1/1024-per-block convergence
+        // (OlympiaGasLimitCalculator), not ETH London's one-time doubling. Setting this to
+        // long.MaxValue ensures the (Eip1559TransitionBlock == blockNumber) check never fires.
+        if (OlympiaTransition is not null && startBlock >= OlympiaTransition.Value)
+        {
+            spec.Eip1559TransitionBlock = long.MaxValue;
         }
     }
 }

@@ -3,6 +3,7 @@
 
 using System.IO;
 using FluentAssertions;
+using Nethermind.Consensus;
 using Nethermind.Core.Specs;
 using Nethermind.Logging;
 using Nethermind.Serialization.Json;
@@ -25,27 +26,27 @@ public class EtcGasScheduleTests
     // ----------------------------------------------------------------
     // ETC mainnet fork blocks
     // ----------------------------------------------------------------
-    private const long ClassicHomestead         = 1_150_000;
-    private const long ClassicTangerine         = 2_500_000;
-    private const long ClassicAtlantis          = 8_772_000;
-    private const long ClassicAgharta           = 9_573_000;
-    private const long ClassicPhoenix           = 10_500_839;
-    private const long ClassicMagneto           = 13_189_133;
-    private const long ClassicMystique          = 14_525_000;
-    private const long ClassicSpiral            = 19_250_000;
-    private const long ClassicOlympiaSentinel   = 1_000_000_000_000_000_000L; // 0xDE0B6B3A7640000
+    private const long ClassicHomestead = 1_150_000;
+    private const long ClassicTangerine = 2_500_000;
+    private const long ClassicAtlantis = 8_772_000;
+    private const long ClassicAgharta = 9_573_000;
+    private const long ClassicPhoenix = 10_500_839;
+    private const long ClassicMagneto = 13_189_133;
+    private const long ClassicMystique = 14_525_000;
+    private const long ClassicSpiral = 19_250_000;
+    private const long ClassicOlympiaSentinel = 1_000_000_000_000_000_000L; // 0xDE0B6B3A7640000
 
     // ----------------------------------------------------------------
     // Mordor testnet fork blocks
     // ----------------------------------------------------------------
-    private const long MordorHomestead          = 0;
-    private const long MordorAtlantis           = 0;
-    private const long MordorAgharta            = 301_243;
-    private const long MordorPhoenix            = 999_983;
-    private const long MordorMagneto            = 3_985_893;
-    private const long MordorMystique           = 5_520_000;
-    private const long MordorSpiral             = 9_957_000;
-    private const long MordorOlympiaSentinel    = 1_000_000_000_000_000_000L;
+    private const long MordorHomestead = 0;
+    private const long MordorAtlantis = 0;
+    private const long MordorAgharta = 301_243;
+    private const long MordorPhoenix = 999_983;
+    private const long MordorMagneto = 3_985_893;
+    private const long MordorMystique = 5_520_000;
+    private const long MordorSpiral = 9_957_000;
+    private const long MordorOlympiaSentinel = 1_000_000_000_000_000_000L;
 
     private static ChainSpecBasedSpecProvider LoadSpec(string chainName)
     {
@@ -68,7 +69,7 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicTangerine - 1).IsEip150Enabled.Should().BeFalse();
-        Spec(p, ClassicTangerine    ).IsEip150Enabled.Should().BeTrue();
+        Spec(p, ClassicTangerine).IsEip150Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -76,8 +77,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicAtlantis - 1).IsEip211Enabled.Should().BeFalse();
-        Spec(p, ClassicAtlantis    ).IsEip211Enabled.Should().BeTrue();
-        Spec(p, ClassicAtlantis    ).IsEip214Enabled.Should().BeTrue();
+        Spec(p, ClassicAtlantis).IsEip211Enabled.Should().BeTrue();
+        Spec(p, ClassicAtlantis).IsEip214Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -85,9 +86,9 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicAgharta - 1).IsEip145Enabled.Should().BeFalse();
-        Spec(p, ClassicAgharta    ).IsEip145Enabled.Should().BeTrue();
-        Spec(p, ClassicAgharta    ).IsEip1014Enabled.Should().BeTrue();
-        Spec(p, ClassicAgharta    ).IsEip1052Enabled.Should().BeTrue();
+        Spec(p, ClassicAgharta).IsEip145Enabled.Should().BeTrue();
+        Spec(p, ClassicAgharta).IsEip1014Enabled.Should().BeTrue();
+        Spec(p, ClassicAgharta).IsEip1052Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -95,10 +96,10 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicPhoenix - 1).IsEip1108Enabled.Should().BeFalse();
-        Spec(p, ClassicPhoenix    ).IsEip1108Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix    ).IsEip1884Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix    ).IsEip2028Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix    ).IsEip2200Enabled.Should().BeTrue();
+        Spec(p, ClassicPhoenix).IsEip1108Enabled.Should().BeTrue();
+        Spec(p, ClassicPhoenix).IsEip1884Enabled.Should().BeTrue();
+        Spec(p, ClassicPhoenix).IsEip2028Enabled.Should().BeTrue();
+        Spec(p, ClassicPhoenix).IsEip2200Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -106,8 +107,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicMagneto - 1).IsEip2565Enabled.Should().BeFalse();
-        Spec(p, ClassicMagneto    ).IsEip2565Enabled.Should().BeTrue();
-        Spec(p, ClassicMagneto    ).IsEip2929Enabled.Should().BeTrue();
+        Spec(p, ClassicMagneto).IsEip2565Enabled.Should().BeTrue();
+        Spec(p, ClassicMagneto).IsEip2929Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -115,19 +116,18 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicMystique - 1).IsEip3529Enabled.Should().BeFalse();
-        Spec(p, ClassicMystique    ).IsEip3529Enabled.Should().BeTrue();
-        Spec(p, ClassicMystique    ).IsEip3541Enabled.Should().BeTrue();
+        Spec(p, ClassicMystique).IsEip3529Enabled.Should().BeTrue();
+        Spec(p, ClassicMystique).IsEip3541Enabled.Should().BeTrue();
     }
 
     [Test]
     public void Classic_Mystique_EIP1559_Is_Suppressed_Pre_Olympia()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        // EIP-1559 fee mechanics are suppressed throughout pre-Olympia.
-        // eip1559Transition = Mystique in chainspec is a Fork ID entry only.
+        // EIP-1559 activates at Olympia (ECIP-1111); ApplyToReleaseSpec suppresses it until then.
         Spec(p, ClassicMystique - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicMystique    ).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicSpiral      ).IsEip1559Enabled.Should().BeFalse();
+        Spec(p, ClassicMystique).IsEip1559Enabled.Should().BeFalse();
+        Spec(p, ClassicSpiral).IsEip1559Enabled.Should().BeFalse();
         Spec(p, ClassicSpiral + 1_000_000).IsEip1559Enabled.Should().BeFalse();
     }
 
@@ -136,8 +136,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         // Must be 1 so Eip1559GasLimitAdjuster does not double the gas limit at Mystique.
-        Spec(p, ClassicMystique    ).ElasticityMultiplier.Should().Be(1);
-        Spec(p, ClassicSpiral      ).ElasticityMultiplier.Should().Be(1);
+        Spec(p, ClassicMystique).ElasticityMultiplier.Should().Be(1);
+        Spec(p, ClassicSpiral).ElasticityMultiplier.Should().Be(1);
         Spec(p, ClassicSpiral + 1_000_000).ElasticityMultiplier.Should().Be(1);
     }
 
@@ -146,9 +146,9 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicSpiral - 1).IsEip3651Enabled.Should().BeFalse();
-        Spec(p, ClassicSpiral    ).IsEip3651Enabled.Should().BeTrue();
-        Spec(p, ClassicSpiral    ).IsEip3855Enabled.Should().BeTrue();
-        Spec(p, ClassicSpiral    ).IsEip3860Enabled.Should().BeTrue();
+        Spec(p, ClassicSpiral).IsEip3651Enabled.Should().BeTrue();
+        Spec(p, ClassicSpiral).IsEip3855Enabled.Should().BeTrue();
+        Spec(p, ClassicSpiral).IsEip3860Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -156,8 +156,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicOlympiaSentinel - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicOlympiaSentinel    ).IsEip1559Enabled.Should().BeTrue();
-        Spec(p, ClassicOlympiaSentinel    ).ElasticityMultiplier.Should().Be(2);
+        Spec(p, ClassicOlympiaSentinel).IsEip1559Enabled.Should().BeTrue();
+        Spec(p, ClassicOlympiaSentinel).ElasticityMultiplier.Should().Be(2);
     }
 
     [Test]
@@ -165,8 +165,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         Spec(p, ClassicOlympiaSentinel - 1).IsEip7825Enabled.Should().BeFalse();
-        Spec(p, ClassicOlympiaSentinel    ).IsEip7825Enabled.Should().BeTrue();
-        Spec(p, ClassicOlympiaSentinel    ).IsEip7623Enabled.Should().BeTrue();
+        Spec(p, ClassicOlympiaSentinel).IsEip7825Enabled.Should().BeTrue();
+        Spec(p, ClassicOlympiaSentinel).IsEip7623Enabled.Should().BeTrue();
     }
 
     // ================================================================
@@ -178,8 +178,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorAgharta - 1).IsEip145Enabled.Should().BeFalse();
-        Spec(p, MordorAgharta    ).IsEip145Enabled.Should().BeTrue();
-        Spec(p, MordorAgharta    ).IsEip1014Enabled.Should().BeTrue();
+        Spec(p, MordorAgharta).IsEip145Enabled.Should().BeTrue();
+        Spec(p, MordorAgharta).IsEip1014Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -187,9 +187,9 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorPhoenix - 1).IsEip1108Enabled.Should().BeFalse();
-        Spec(p, MordorPhoenix    ).IsEip1108Enabled.Should().BeTrue();
-        Spec(p, MordorPhoenix    ).IsEip2028Enabled.Should().BeTrue();
-        Spec(p, MordorPhoenix    ).IsEip2200Enabled.Should().BeTrue();
+        Spec(p, MordorPhoenix).IsEip1108Enabled.Should().BeTrue();
+        Spec(p, MordorPhoenix).IsEip2028Enabled.Should().BeTrue();
+        Spec(p, MordorPhoenix).IsEip2200Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -197,17 +197,17 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorMagneto - 1).IsEip2929Enabled.Should().BeFalse();
-        Spec(p, MordorMagneto    ).IsEip2929Enabled.Should().BeTrue();
-        Spec(p, MordorMagneto    ).IsEip2565Enabled.Should().BeTrue();
+        Spec(p, MordorMagneto).IsEip2929Enabled.Should().BeTrue();
+        Spec(p, MordorMagneto).IsEip2565Enabled.Should().BeTrue();
     }
 
     [Test]
     public void Mordor_Mystique_EIP1559_Is_Suppressed_Pre_Olympia()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorMystique    ).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral      ).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral      ).ElasticityMultiplier.Should().Be(1);
+        Spec(p, MordorMystique).IsEip1559Enabled.Should().BeFalse();
+        Spec(p, MordorSpiral).IsEip1559Enabled.Should().BeFalse();
+        Spec(p, MordorSpiral).ElasticityMultiplier.Should().Be(1);
     }
 
     [Test]
@@ -215,9 +215,9 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorSpiral - 1).IsEip3651Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral    ).IsEip3651Enabled.Should().BeTrue();
-        Spec(p, MordorSpiral    ).IsEip3855Enabled.Should().BeTrue();
-        Spec(p, MordorSpiral    ).IsEip3860Enabled.Should().BeTrue();
+        Spec(p, MordorSpiral).IsEip3651Enabled.Should().BeTrue();
+        Spec(p, MordorSpiral).IsEip3855Enabled.Should().BeTrue();
+        Spec(p, MordorSpiral).IsEip3860Enabled.Should().BeTrue();
     }
 
     [Test]
@@ -225,8 +225,8 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorOlympiaSentinel - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorOlympiaSentinel    ).IsEip1559Enabled.Should().BeTrue();
-        Spec(p, MordorOlympiaSentinel    ).ElasticityMultiplier.Should().Be(2);
+        Spec(p, MordorOlympiaSentinel).IsEip1559Enabled.Should().BeTrue();
+        Spec(p, MordorOlympiaSentinel).ElasticityMultiplier.Should().Be(2);
     }
 
     [Test]
@@ -234,8 +234,30 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         Spec(p, MordorOlympiaSentinel - 1).IsEip7825Enabled.Should().BeFalse();
-        Spec(p, MordorOlympiaSentinel    ).IsEip7825Enabled.Should().BeTrue();
-        Spec(p, MordorOlympiaSentinel    ).IsEip7623Enabled.Should().BeTrue();
+        Spec(p, MordorOlympiaSentinel).IsEip7825Enabled.Should().BeTrue();
+        Spec(p, MordorOlympiaSentinel).IsEip7623Enabled.Should().BeTrue();
+    }
+
+    // ================================================================
+    // Gas limit adjuster: must NOT double at Olympia
+    // ================================================================
+
+    [Test]
+    public void Classic_Olympia_GasLimitAdjuster_Does_Not_Double_At_Transition()
+    {
+        ChainSpecBasedSpecProvider p = LoadSpec("classic");
+        IReleaseSpec spec = Spec(p, ClassicOlympiaSentinel);
+        long adjusted = Eip1559GasLimitAdjuster.AdjustGasLimit(spec, 8_000_000, ClassicOlympiaSentinel);
+        adjusted.Should().Be(8_000_000, "ETC Olympia must not apply the 2x London gas limit doubling");
+    }
+
+    [Test]
+    public void Mordor_Olympia_GasLimitAdjuster_Does_Not_Double_At_Transition()
+    {
+        ChainSpecBasedSpecProvider p = LoadSpec("mordor");
+        IReleaseSpec spec = Spec(p, MordorOlympiaSentinel);
+        long adjusted = Eip1559GasLimitAdjuster.AdjustGasLimit(spec, 8_000_000, MordorOlympiaSentinel);
+        adjusted.Should().Be(8_000_000, "ETC Olympia must not apply the 2x London gas limit doubling");
     }
 
     // ================================================================

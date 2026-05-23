@@ -86,21 +86,7 @@
         "eip3860Transition": "0x97ee88",
         "eip6049Transition": "0x97ee88",
         "homesteadTransition": "0x0",
-        "eip3607Transition": null,
-        "eip1559Transition": "0xDE0B6B3A7640000",
-        "eip3198Transition": "0xDE0B6B3A7640000",
-        "eip5656Transition": "0xDE0B6B3A7640000",
-        "eip1153Transition": "0xDE0B6B3A7640000",
-        "eip6780Transition": "0xDE0B6B3A7640000",
-        "eip2537Transition": "0xDE0B6B3A7640000",
-        "eip7823Transition": "0xDE0B6B3A7640000",
-        "eip7883Transition": "0xDE0B6B3A7640000",
-        "eip7825Transition": "0xDE0B6B3A7640000",
-        "eip7623Transition": "0xDE0B6B3A7640000",
-        "eip7951Transition": "0xDE0B6B3A7640000",
-        "eip2935Transition": "0xDE0B6B3A7640000",
-        "eip7702Transition": "0xDE0B6B3A7640000",
-        "eip7934Transition": "0xDE0B6B3A7640000"
+        "eip3607Transition": null
     },
     "genesis": {
         "seal": {
