@@ -1020,8 +1020,7 @@ namespace Nethermind.TxPool
 
         internal void ResetAddress(Address address)
         {
-            using ArrayPoolList<AddressAsKey> arrayPoolList = new(1);
-            arrayPoolList.Add(address);
+            using ArrayPoolList<AddressAsKey> arrayPoolList = new(1) { address };
             _accountCache.RemoveAccounts(arrayPoolList);
         }
 

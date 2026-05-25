@@ -9,8 +9,8 @@
     "DiscoveryEnabled": true
   },
   "Sync": {
-    "FastSync": false,
-    "SnapSync": false,
+    "FastSync": true,
+    "SnapSync": true,
     "SnapServingEnabled": true
   },
   "Receipt": {

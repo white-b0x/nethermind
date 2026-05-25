@@ -382,9 +382,10 @@ public sealed class DiscoveryV5App : IDiscoveryApp
             {
                 try
                 {
-                    using ArrayPoolList<Task> discoverTasks = new(RandomNodesToLookupCount);
-
-                    discoverTasks.Add(DiscoverAsync(GetStartingNodes(), selfNodeId, false));
+                    using ArrayPoolList<Task> discoverTasks = new(RandomNodesToLookupCount)
+                    {
+                        DiscoverAsync(GetStartingNodes(), selfNodeId, false)
+                    };
 
                     for (int i = 0; i < RandomNodesToLookupCount; i++)
                     {

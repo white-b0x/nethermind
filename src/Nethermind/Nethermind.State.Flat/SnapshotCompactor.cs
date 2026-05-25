@@ -142,7 +142,7 @@ public class SnapshotCompactor(
         // Slots and Selfdestruct
         compactTask.Add(Task.Run(() =>
         {
-            using PooledSet<Address> addressToClear = new();
+            using PooledSet<Address> addressToClear = [];
 
             for (int i = 0; i < snapshots.Count; i++)
             {
@@ -187,7 +187,7 @@ public class SnapshotCompactor(
         for (int i = 0; i < snapshots.Count; i++)
         {
             // Clear storage nodes for self-destructed accounts
-            using PooledSet<Hash256> addressHashToClear = new();
+            using PooledSet<Hash256> addressHashToClear = [];
             foreach ((HashedKey<Address> address, bool isNewAccount) in snapshots[i].SelfDestructedStorageAddresses)
             {
                 if (!isNewAccount)

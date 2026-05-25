@@ -72,8 +72,7 @@ public class Importer(
             }
         }, cancellationToken);
         int concurrentIngestCount = Math.Min(Environment.ProcessorCount, maxConcurrency);
-        using ArrayPoolList<Task> tasks = new(concurrentIngestCount + 1);
-        tasks.Add(visitTask);
+        using ArrayPoolList<Task> tasks = new(concurrentIngestCount + 1) { visitTask };
         tasks.AddRange(Enumerable.Range(0, concurrentIngestCount).Select(_ => Task.Run(async () =>
         {
             await IngestLogic(from, channel.Reader, cancellationToken);

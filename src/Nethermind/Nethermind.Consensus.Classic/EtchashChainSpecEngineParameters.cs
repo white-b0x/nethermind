@@ -112,6 +112,11 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
             chainSpec.Parameters.Eip7951Transition = olympia;
             chainSpec.Parameters.Eip2935Transition = olympia;
             chainSpec.Parameters.Eip7702Transition = olympia;
+            // EIP-7934: ETC adopts the upstream enforcement constant verbatim (8,388,608 = 10 MiB − 2 MiB).
+            // The 2 MiB SAFETY_MARGIN in the EIP exists to accommodate ETH's beacon block gossip overhead;
+            // ETC has no beacon chain (ECIP-1121 omits all PoS/CL elements), so the margin has no operational
+            // meaning here. Leaving Eip7934MaxRlpBlockSize at its default preserves EVM alignment with Fusaka
+            // without introducing any ETC-specific divergence from the spec constant.
             chainSpec.Parameters.Eip7934Transition = olympia;
         }
     }

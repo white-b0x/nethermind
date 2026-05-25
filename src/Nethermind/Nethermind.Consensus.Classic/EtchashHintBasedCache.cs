@@ -15,10 +15,10 @@ internal sealed class EtchashHintBasedCache(Func<EtchashCacheEpoch, IEthashDataS
     internal const int MaxHintEpochs = 11;
     private static readonly TimeSpan RecentRetention = TimeSpan.FromSeconds(30);
 
-    private readonly Dictionary<Guid, HashSet<uint>> _epochsPerGuid = new();
-    private readonly Dictionary<uint, int> _epochRefs = new();
-    private readonly Dictionary<uint, Task<IEthashDataSet>> _cachedSets = new();
-    private readonly Dictionary<uint, DataSetWithTime> _recent = new();
+    private readonly Dictionary<Guid, HashSet<uint>> _epochsPerGuid = [];
+    private readonly Dictionary<uint, int> _epochRefs = [];
+    private readonly Dictionary<uint, Task<IEthashDataSet>> _cachedSets = [];
+    private readonly Dictionary<uint, DataSetWithTime> _recent = [];
     private readonly Func<EtchashCacheEpoch, IEthashDataSet> _createDataSet = createDataSet;
     private readonly Lock _lock = new();
 

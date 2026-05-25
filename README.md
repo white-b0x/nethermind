@@ -18,11 +18,21 @@ Runs on Linux, Windows, and macOS.
 
 ### Supported networks
 
-**Ethereum** · **Gnosis** · **Optimism** · **Taiko** · **World Chain** · **Linea** · **Energy Web**
+**Ethereum** · **Gnosis** · **Optimism** · **Base** · **Taiko** · **World Chain** · **Linea** · **Energy Web** · **Ethereum Classic** (`main` branch)
 
 ### Documentation
 
 Nethermind documentation is available at [docs.nethermind.io][docs].
+
+## Ethereum Classic Support (white-b0x / `main` branch)
+
+The `main` branch adds Ethereum Classic (ETC mainnet, chain ID 61) and Mordor testnet (chain ID 63) support via the `Nethermind.Consensus.Classic` plugin. Maintained by [white-b0x](https://github.com/white-b0x).
+
+ETC support is implemented as a built-in extension compiled directly into the Nethermind codebase, tracking upstream Nethermind releases without forking. The extension provides ETC chainspecs, ETChash Proof-of-Work consensus, the ECIP-1017 era-based emission schedule, and ECBP-1100 (MESS) 51% attack resistance.
+
+### Olympia Hard Fork
+
+The `main` branch implements the upcoming Ethereum Classic Olympia upgrade: EIP-1559 base fee mechanics (ECIP-1111), an immutable on-chain Treasury (ECIP-1112), and a suite of EVM modernization EIPs aligned with post-London Ethereum (ECIP-1121).
 
 ## Capabilities
 
