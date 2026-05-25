@@ -92,17 +92,24 @@ internal class EtcBlockTree(
     }
 
     /// <remarks>
-    /// Active in [_messActivateBlock, _messDeactivateBlock) and again in [_messOlympiaBlock, ∞).
-    /// Returns true unconditionally when no activation block is configured (no block-number gating needed).
+    /// Active in [activateBlock, deactivateBlock) and again in [olympiaBlock, ∞).
+    /// Returns false when no activation block is configured.
     /// </remarks>
-    private bool IsMessActiveAtBlock(long blockNumber)
+    internal static bool IsMessActiveAtBlock(
+        long blockNumber,
+        long? activateBlock,
+        long? deactivateBlock,
+        long? olympiaBlock)
     {
-        if (_messActivateBlock is null || blockNumber < _messActivateBlock.Value)
+        if (activateBlock is null || blockNumber < activateBlock.Value)
             return false;
-        if (_messDeactivateBlock is not null && blockNumber >= _messDeactivateBlock.Value)
-            return _messOlympiaBlock is not null && blockNumber >= _messOlympiaBlock.Value;
+        if (deactivateBlock is not null && blockNumber >= deactivateBlock.Value)
+            return olympiaBlock is not null && blockNumber >= olympiaBlock.Value;
         return true;
     }
+
+    internal bool IsMessActiveAtBlock(long blockNumber) =>
+        IsMessActiveAtBlock(blockNumber, _messActivateBlock, _messDeactivateBlock, _messOlympiaBlock);
 
     private BlockHeader? FindCommonAncestor(BlockHeader a, BlockHeader b)
     {
