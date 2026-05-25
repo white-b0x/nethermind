@@ -135,23 +135,31 @@ public class ChainParameters
     public Address Eip7002ContractAddress { get; set; }
     public ulong? Eip7251TransitionTimestamp { get; set; }
     public Address Eip7251ContractAddress { get; set; }
+    public long? Eip2935Transition { get; set; }
     public ulong? Eip2935TransitionTimestamp { get; set; }
     public Address Eip2935ContractAddress { get; set; }
     public long Eip2935RingBufferSize { get; set; } = Eip2935Constants.RingBufferSize;
+    public long? Eip7951Transition { get; set; }
     public ulong? Eip7951TransitionTimestamp { get; set; }
     public ulong? Rip7212TransitionTimestamp { get; set; }
+    public long? Eip7702Transition { get; set; }
     public ulong? Eip7702TransitionTimestamp { get; set; }
 
     public ulong? Eip7594TransitionTimestamp { get; set; }
+    public long? Eip7623Transition { get; set; }
     public ulong? Eip7623TransitionTimestamp { get; set; }
     public ulong? Eip7778TransitionTimestamp { get; set; }
+    public long? Eip7823Transition { get; set; }
     public ulong? Eip7823TransitionTimestamp { get; set; }
+    public long? Eip7825Transition { get; set; }
     public ulong? Eip7825TransitionTimestamp { get; set; }
+    public long? Eip7883Transition { get; set; }
     public ulong? Eip7883TransitionTimestamp { get; set; }
     public ulong? Eip7918TransitionTimestamp { get; set; }
     public ulong? Eip7976TransitionTimestamp { get; set; }
     public ulong? Eip7981TransitionTimestamp { get; set; }
 
+    public long? Eip7934Transition { get; set; }
     public ulong? Eip7934TransitionTimestamp { get; set; }
     public int Eip7934MaxRlpBlockSize { get; set; }
 

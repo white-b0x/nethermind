@@ -12,6 +12,7 @@ public static class NethermindPlugins
     [
         typeof(Nethermind.BalRecorder.BalRecorderPlugin),
         typeof(Nethermind.Consensus.AuRa.AuRaPlugin),
+        typeof(Nethermind.Consensus.Classic.EthereumClassicPlugin),
         typeof(Nethermind.Consensus.Clique.CliquePlugin),
         typeof(Nethermind.Consensus.Ethash.EthashPlugin),
         typeof(Nethermind.Consensus.Ethash.NethDevPlugin),

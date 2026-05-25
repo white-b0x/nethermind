@@ -8,6 +8,7 @@ using Nethermind.Blockchain.Synchronization;
 using Nethermind.Consensus;
 using Nethermind.Consensus.Scheduler;
 using Nethermind.Core;
+using Nethermind.Core.Crypto;
 using Nethermind.Core.Specs;
 using Nethermind.Int256;
 using Nethermind.Logging;
@@ -51,11 +52,16 @@ public class Eth69ProtocolHandler(
 
     public override int MessageIdSpaceSize => 18;
 
-    // Explicitly mark as not supported
+    // ETH69 omits totalDifficulty in STATUS and BlockRangeUpdate messages. For PoW chains
+    // (Ethash / Etchash) we resolve it via 3-tier lookup so the sync manager can prioritise peers.
+    private UInt256? _resolvedTd;
+    private readonly bool _isPoWChain =
+        specProvider.SealEngine is SealEngineType.Ethash or SealEngineType.Etchash;
+
     public override UInt256? TotalDifficulty
     {
-        get => null;
-        set { }
+        get => _resolvedTd;
+        set => _resolvedTd = value;
     }
 
     protected override bool HandleMessageCore(ZeroPacket message)
@@ -111,6 +117,14 @@ public class Eth69ProtocolHandler(
         Session.IsNetworkIdMatched = SyncServer.NetworkId == (ulong)status.NetworkId;
         HeadNumber = status.LatestBlock;
         HeadHash = status.LatestBlockHash;
+
+        if (_isPoWChain)
+        {
+            _resolvedTd = ResolvePowTd(status.LatestBlockHash, status.LatestBlock, SyncServer);
+            if (Logger.IsDebug)
+                Logger.Debug($"ETH69 PoW TD resolved: td={_resolvedTd} latestBlock={status.LatestBlock} peer={Node:c}");
+        }
+
         NotifyProtocolInitialized(eventArgs);
     }
 
@@ -135,7 +149,53 @@ public class Eth69ProtocolHandler(
             _remoteHeadBlockHash = blockRangeUpdate.LatestBlockHash;
             HeadNumber = blockRangeUpdate.LatestBlock;
             HeadHash = blockRangeUpdate.LatestBlockHash;
+
+            if (_isPoWChain)
+            {
+                UInt256? refreshed = ResolvePowTd(blockRangeUpdate.LatestBlockHash, blockRangeUpdate.LatestBlock, SyncServer);
+                if (refreshed > _resolvedTd)
+                {
+                    _resolvedTd = refreshed;
+                    if (Logger.IsDebug)
+                        Logger.Debug($"ETH69 PoW TD refreshed: td={_resolvedTd} latestBlock={blockRangeUpdate.LatestBlock} peer={Node:c}");
+                }
+            }
         }
+    }
+
+    /// <remarks>
+    /// ETH69 STATUS and BlockRangeUpdate omit totalDifficulty. For PoW chains we resolve it via
+    /// 3-tier: Tier 1 exact hash lookup (succeeds when peer's block is already in our chain),
+    /// Tier 2 canonical-number lookup (accurate for any peer at or below our head height),
+    /// Tier 3 marginal-rate estimate using current head difficulty × gap × 9999/10000
+    /// (slight underestimate so peer is never given higher priority than their real TD warrants).
+    /// Returns null (lowest priority) during cold-start when our chain DB has no blocks.
+    /// </remarks>
+    private static UInt256? ResolvePowTd(Hash256 bestHash, long bestNumber, ISyncServer syncServer)
+    {
+        // Tier 1: exact hash — succeeds when peer's block is already in our chain
+        UInt256? td = syncServer.FindHeader(bestHash)?.TotalDifficulty;
+        if (td is not null) return td;
+
+        // Tier 2: canonical block-number lookup — accurate for any peer ≤ our head height
+        Hash256? canonicalHash = syncServer.FindHash(bestNumber);
+        if (canonicalHash is not null)
+        {
+            td = syncServer.FindHeader(canonicalHash)?.TotalDifficulty;
+            if (td is not null) return td;
+        }
+
+        // Tier 3: marginal-rate estimate — fallback when peer is ahead of our chain head.
+        // Uses current block difficulty as per-block rate rather than the historical average.
+        // COLD_START guard: return null when DB is empty so we don't poison bootstrap.
+        BlockHeader? head = syncServer.Head;
+        if (head is null || head.Number == 0) return null;
+
+        UInt256 ourTd = head.TotalDifficulty ?? UInt256.Zero;
+        long gap = Math.Max(0L, bestNumber - head.Number);
+        // 9999/10000 guarantees slight underestimate; peer never outranks real ETH68 TDs
+        UInt256 rate = head.Difficulty * 9999UL / 10000UL;
+        return ourTd + rate * (UInt256)(ulong)gap;
     }
 
     private new async Task<ReceiptsMessage69> Handle(GetReceiptsMessage getReceiptsMessage, CancellationToken cancellationToken)

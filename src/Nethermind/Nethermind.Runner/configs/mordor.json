@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/NethermindEth/core-scripts/refs/heads/main/schemas/config.json",
+  "Init": {
+    "ChainSpecPath": "chainspec/mordor.json",
+    "GenesisHash": "0xa68ebde7932eccb177d38d55dcc6461a019dd795a681e59b5a3e4f3a7259a3f1",
+    "BaseDbPath": "nethermind_db/mordor",
+    "LogFileName": "mordor.log",
+    "MemoryHint": 1024000000,
+    "DiscoveryEnabled": true
+  },
+  "Sync": {
+    "FastSync": false,
+    "SnapSync": false,
+    "SnapServingEnabled": true
+  },
+  "Receipt": {
+    "TxLookupLimit": 2350000,
+    "CompactReceiptStore": true,
+    "CompactTxIndex": true
+  },
+  "Network": {
+    "P2PPort": 30308,
+    "DiscoveryPort": 30308,
+    "MaxActivePeers": 50,
+    "DiscoveryDns": "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.blockd.info"
+  },
+  "Metrics": {
+    "NodeName": "Mordor Testnet"
+  },
+  "JsonRpc": {
+    "Enabled": true,
+    "Timeout": 20000,
+    "Host": "127.0.0.1",
+    "Port": 8560,
+    "AdditionalRpcUrls": ["http://127.0.0.1:8561|http;ws|net;eth;subscribe;web3;client;debug;admin"],
+    "EnabledModules": ["Eth", "Net", "Web3", "Admin", "Debug", "Subscribe"]
+  },
+  "Merge": {
+    "Enabled": false
+  }
+}

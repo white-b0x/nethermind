@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <Nullable>annotations</Nullable>
     <AssemblyName>nethermind</AssemblyName>
+    <Product>olympia-nethermind-v$(VersionPrefix)</Product>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <GarbageCollectionAdaptationMode>0</GarbageCollectionAdaptationMode>
@@ -49,6 +50,7 @@
     <ProjectReference Include="..\Nethermind.BalRecorder\Nethermind.BalRecorder.csproj" />
     <ProjectReference Include="..\Nethermind.Flashbots\Nethermind.Flashbots.csproj" />
     <ProjectReference Include="..\Nethermind.Consensus.AuRa\Nethermind.Consensus.AuRa.csproj" />
+    <ProjectReference Include="..\Nethermind.Consensus.Classic\Nethermind.Consensus.Classic.csproj" />
     <ProjectReference Include="..\Nethermind.Consensus.Clique\Nethermind.Consensus.Clique.csproj" />
     <ProjectReference Include="..\Nethermind.Consensus.Ethash\Nethermind.Consensus.Ethash.csproj" />
     <ProjectReference Include="..\Nethermind.Core\Nethermind.Core.csproj" />

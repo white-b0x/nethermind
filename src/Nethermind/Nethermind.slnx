@@ -101,6 +101,7 @@
   <Project Path="Nethermind.Config/Nethermind.Config.csproj" />
   <Project Path="Nethermind.Consensus.AuRa/Nethermind.Consensus.AuRa.csproj" />
   <Project Path="Nethermind.Consensus.Clique/Nethermind.Consensus.Clique.csproj" />
+  <Project Path="Nethermind.Consensus.Classic/Nethermind.Consensus.Classic.csproj" />
   <Project Path="Nethermind.Consensus.Ethash/Nethermind.Consensus.Ethash.csproj" />
   <Project Path="Nethermind.Consensus/Nethermind.Consensus.csproj" />
   <Project Path="Nethermind.Core/Nethermind.Core.csproj" />
