@@ -167,9 +167,12 @@ public class Eth69ProtocolHandler(
     /// ETH69 STATUS and BlockRangeUpdate omit totalDifficulty. For PoW chains we resolve it via
     /// 3-tier: Tier 1 exact hash lookup (succeeds when peer's block is already in our chain),
     /// Tier 2 canonical-number lookup (accurate for any peer at or below our head height),
-    /// Tier 3 marginal-rate estimate using current head difficulty × gap × 9999/10000
-    /// (slight underestimate so peer is never given higher priority than their real TD warrants).
-    /// Returns null (lowest priority) during cold-start when our chain DB has no blocks.
+    /// Tier 3 rolling-window estimate: mean block difficulty over the last 10,000 blocks × gap.
+    /// Avoids two failure modes: (1) all-time average is contaminated by ETC's pre-merge
+    /// low-hashrate era; (2) point-in-time headDiff rides 25-35% weekly hashrate swings and
+    /// overestimates during peaks. The 10K window (~36 hours) stays within the current difficulty
+    /// regime and transitions naturally through the merge boundary during initial sync. Falls back
+    /// to genesis difficulty at block 0. Returns null only when genesis has not yet been imported.
     /// </remarks>
     private static UInt256? ResolvePowTd(Hash256 bestHash, long bestNumber, ISyncServer syncServer)
     {
@@ -185,17 +188,31 @@ public class Eth69ProtocolHandler(
             if (td is not null) return td;
         }
 
-        // Tier 3: marginal-rate estimate — fallback when peer is ahead of our chain head.
-        // Uses current block difficulty as per-block rate rather than the historical average.
-        // COLD_START guard: return null when DB is empty so we don't poison bootstrap.
+        // Tier 3: rolling-window estimate — fallback when peer is ahead of our chain head.
+        // COLD_START guard: return null only when genesis is not yet imported.
         BlockHeader? head = syncServer.Head;
-        if (head is null || head.Number == 0) return null;
+        if (head is null) return null;
 
         UInt256 ourTd = head.TotalDifficulty ?? UInt256.Zero;
         long gap = Math.Max(0L, bestNumber - head.Number);
-        // 9999/10000 guarantees slight underestimate; peer never outranks real ETH68 TDs
-        UInt256 rate = head.Difficulty * 9999UL / 10000UL;
+        UInt256 rate = RollingWindowDiff(head, ourTd, syncServer);
         return ourTd + rate * (UInt256)(ulong)gap;
+    }
+
+    private const long Tier3RollingWindow = 10_000L;
+
+    private static UInt256 RollingWindowDiff(BlockHeader head, UInt256 headTd, ISyncServer syncServer)
+    {
+        // genesis: use genesis difficulty as rate (genesis TD is real PoW data, ~17B on ETC)
+        if (head.Number == 0) return head.Difficulty;
+        // insufficient history: all-available mean
+        if (head.Number < Tier3RollingWindow)
+            return headTd / (UInt256)(ulong)head.Number;
+        // rolling window: mean diff over last 10K blocks — stays in current difficulty regime
+        Hash256? windowHash = syncServer.FindHash(head.Number - Tier3RollingWindow);
+        BlockHeader? windowHeader = windowHash is null ? null : syncServer.FindHeader(windowHash);
+        if (windowHeader?.TotalDifficulty is null) return head.Difficulty; // window block evicted: fallback
+        return (headTd - windowHeader.TotalDifficulty.Value) / (UInt256)Tier3RollingWindow;
     }
 
     private new async Task<ReceiptsMessage69> Handle(GetReceiptsMessage getReceiptsMessage, CancellationToken cancellationToken)
