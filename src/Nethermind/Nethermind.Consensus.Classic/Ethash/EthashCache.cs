@@ -7,7 +7,7 @@ using System.Buffers;
 using System.Runtime.InteropServices;
 using Nethermind.Crypto;
 
-namespace Nethermind.Consensus.Classic;
+namespace Nethermind.Consensus.Classic.Ethash;
 
 internal class EthashCache : IEthashDataSet
 {

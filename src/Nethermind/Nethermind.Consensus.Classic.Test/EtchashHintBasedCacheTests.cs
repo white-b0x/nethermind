@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
+using Nethermind.Consensus.Classic.Ethash;
 using NUnit.Framework;
 
 namespace Nethermind.Consensus.Classic.Test;
@@ -23,15 +23,15 @@ public class EtchashHintBasedCacheTests
         cache.Hint(g1, [epoch]);
         cache.Hint(g2, [epoch]);
 
-        cache.CachedEpochsCount.Should().Be(1);
-        cache.Get(epoch).Should().NotBeNull();
+        Assert.That(cache.CachedEpochsCount, Is.EqualTo(1));
+        Assert.That(cache.Get(epoch), Is.Not.Null);
 
         cache.Hint(g1, []);
-        cache.CachedEpochsCount.Should().Be(1);
+        Assert.That(cache.CachedEpochsCount, Is.EqualTo(1));
 
         cache.Hint(g2, []);
-        cache.CachedEpochsCount.Should().Be(0);
-        cache.Get(epoch).Should().BeNull();
+        Assert.That(cache.CachedEpochsCount, Is.EqualTo(0));
+        Assert.That(cache.Get(epoch), Is.Null);
     }
 
     [Test]
@@ -47,8 +47,8 @@ public class EtchashHintBasedCacheTests
         cache.Hint(guid, []);
         cache.Hint(guid, [epoch]);
 
-        cache.Get(epoch).Should().BeSameAs(first);
-        builds.Should().Be(1);
+        Assert.That(cache.Get(epoch), Is.SameAs(first));
+        Assert.That(builds, Is.EqualTo(1));
     }
 
     [Test]
@@ -60,7 +60,7 @@ public class EtchashHintBasedCacheTests
             .ToArray();
 
         Action act = () => cache.Hint(Guid.NewGuid(), epochs);
-        act.Should().Throw<InvalidOperationException>().WithMessage("Hint too wide");
+        Assert.That(act, Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo("Hint too wide"));
     }
 
     [Test]
@@ -77,9 +77,10 @@ public class EtchashHintBasedCacheTests
         cache.Hint(guid, [active]);
         cache.Get(active);
 
-        created.Should().HaveCount(2);
+        Assert.That(created, Has.Count.EqualTo(2));
         cache.Dispose();
-        created.Should().AllSatisfy(ds => ds.DisposeCount.Should().Be(1));
+        foreach (TestDataSet ds in created)
+            Assert.That(ds.DisposeCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -93,9 +94,9 @@ public class EtchashHintBasedCacheTests
 
         cache.Hint(Guid.NewGuid(), epochs);
 
-        cache.CachedEpochsCount.Should().Be(2);
-        ((TestDataSet)cache.Get(epochs[0])!).SeedEpoch.Should().Be(389);
-        ((TestDataSet)cache.Get(epochs[1])!).SeedEpoch.Should().Be(390);
+        Assert.That(cache.CachedEpochsCount, Is.EqualTo(2));
+        Assert.That(((TestDataSet)cache.Get(epochs[0])!).SeedEpoch, Is.EqualTo(389));
+        Assert.That(((TestDataSet)cache.Get(epochs[1])!).SeedEpoch, Is.EqualTo(390));
     }
 
     private sealed class TestDataSet(uint seedEpoch = 0) : IEthashDataSet

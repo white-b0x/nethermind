@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using FluentAssertions;
 using Nethermind.Core;
 using Nethermind.Core.Test.Builders;
 using NUnit.Framework;
@@ -39,7 +38,7 @@ public class OlympiaGasLimitCalculatorTests
         // Block at OlympiaBlock - 1 means next block is OlympiaBlock - 1 + 1 = OlympiaBlock, but
         // the pre-Olympia branch fires when parentHeader.Number + 1 < OlympiaBlock.
         BlockHeader parent = ParentAt(OlympiaBlock - 2, gasLimit); // next block = OlympiaBlock - 1
-        calc.GetGasLimit(parent).Should().Be(gasLimit);
+        Assert.That(calc.GetGasLimit(parent), Is.EqualTo(gasLimit));
     }
 
     [Test]
@@ -47,7 +46,7 @@ public class OlympiaGasLimitCalculatorTests
     {
         OlympiaGasLimitCalculator calc = new(OlympiaBlock);
         BlockHeader parent = ParentAt(OlympiaBlock - 2, 8_000_000); // block OlympiaBlock - 1 produced
-        calc.GetGasLimit(parent).Should().Be(8_000_000);
+        Assert.That(calc.GetGasLimit(parent), Is.EqualTo(8_000_000));
     }
 
     // ------------------------------------------------------------------
@@ -60,7 +59,7 @@ public class OlympiaGasLimitCalculatorTests
         OlympiaGasLimitCalculator calc = new(OlympiaBlock);
         BlockHeader parent = ParentAt(OlympiaBlock - 1, 8_000_000); // next block = OlympiaBlock
         long result = calc.GetGasLimit(parent);
-        result.Should().BeGreaterThan(8_000_000).And.BeLessThanOrEqualTo(OlympiaGasTarget);
+        Assert.That(result, Is.GreaterThan(8_000_000).And.LessThanOrEqualTo(OlympiaGasTarget));
     }
 
     // ------------------------------------------------------------------
@@ -80,12 +79,12 @@ public class OlympiaGasLimitCalculatorTests
             gasLimit = calc.GetGasLimit(ParentAt(blockNumber, gasLimit));
             blockNumber++;
             steps++;
-            steps.Should().BeLessThan(10_000, "convergence must complete within 10,000 blocks");
+            Assert.That(steps, Is.LessThan(10_000), "convergence must complete within 10,000 blocks");
         }
 
-        gasLimit.Should().Be(OlympiaGasTarget);
+        Assert.That(gasLimit, Is.EqualTo(OlympiaGasTarget));
         // Expected convergence: delta = 8M/1024 - 1 ≈ 7,811 gas/block → ~6,660 blocks
-        steps.Should().BeLessThan(7_000);
+        Assert.That(steps, Is.LessThan(7_000));
     }
 
     [Test]
@@ -100,7 +99,7 @@ public class OlympiaGasLimitCalculatorTests
             gasLimit = calc.GetGasLimit(ParentAt(blockNumber++, gasLimit));
         }
 
-        gasLimit.Should().Be(OlympiaGasTarget, "must converge to exactly 60M without overshooting");
+        Assert.That(gasLimit, Is.EqualTo(OlympiaGasTarget), "must converge to exactly 60M without overshooting");
     }
 
     // ------------------------------------------------------------------
@@ -112,7 +111,7 @@ public class OlympiaGasLimitCalculatorTests
     {
         OlympiaGasLimitCalculator calc = new(OlympiaBlock);
         BlockHeader parent = ParentAt(OlympiaBlock + 1000, OlympiaGasTarget);
-        calc.GetGasLimit(parent).Should().Be(OlympiaGasTarget);
+        Assert.That(calc.GetGasLimit(parent), Is.EqualTo(OlympiaGasTarget));
     }
 
     // ------------------------------------------------------------------
@@ -125,7 +124,7 @@ public class OlympiaGasLimitCalculatorTests
         OlympiaGasLimitCalculator calc = new(OlympiaBlock);
         BlockHeader parent = ParentAt(OlympiaBlock + 100, 80_000_000);
         long result = calc.GetGasLimit(parent);
-        result.Should().BeLessThan(80_000_000).And.BeGreaterThanOrEqualTo(OlympiaGasTarget);
+        Assert.That(result, Is.LessThan(80_000_000).And.GreaterThanOrEqualTo(OlympiaGasTarget));
     }
 
     [Test]
@@ -140,7 +139,7 @@ public class OlympiaGasLimitCalculatorTests
             gasLimit = calc.GetGasLimit(ParentAt(blockNumber++, gasLimit));
         }
 
-        gasLimit.Should().Be(OlympiaGasTarget);
+        Assert.That(gasLimit, Is.EqualTo(OlympiaGasTarget));
     }
 
     // ------------------------------------------------------------------
@@ -153,7 +152,7 @@ public class OlympiaGasLimitCalculatorTests
         OlympiaGasLimitCalculator calc = new(null);
         foreach (long gasLimit in new[] { 8_000_000L, 60_000_000L, 1L, long.MaxValue / 2 })
         {
-            calc.GetGasLimit(ParentAt(99_999_999, gasLimit)).Should().Be(gasLimit);
+            Assert.That(calc.GetGasLimit(ParentAt(99_999_999, gasLimit)), Is.EqualTo(gasLimit));
         }
     }
 
@@ -169,6 +168,6 @@ public class OlympiaGasLimitCalculatorTests
         long expectedDelta = Math.Max(parent / GasLimitBoundDivisor - 1, 1); // 7811
         BlockHeader header = ParentAt(OlympiaBlock - 1, parent);
         long result = calc.GetGasLimit(header);
-        (result - parent).Should().Be(expectedDelta);
+        Assert.That(result - parent, Is.EqualTo(expectedDelta));
     }
 }

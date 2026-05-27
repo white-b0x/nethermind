@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
+using Nethermind.Consensus.Classic.Ethash;
 using Nethermind.Consensus.Ethash;
 using Nethermind.Core;
 using Nethermind.Core.Crypto;

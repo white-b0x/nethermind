@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 using System;
+using Nethermind.Consensus.Classic.Ethash;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Runtime.CompilerServices;

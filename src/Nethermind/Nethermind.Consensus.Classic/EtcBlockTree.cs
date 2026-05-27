@@ -3,6 +3,7 @@
 
 using Autofac.Features.AttributeFilters;
 using Nethermind.Blockchain;
+using Nethermind.Blockchain.BlockAccessLists;
 using Nethermind.Blockchain.Blocks;
 using Nethermind.Blockchain.Headers;
 using Nethermind.Blockchain.Synchronization;

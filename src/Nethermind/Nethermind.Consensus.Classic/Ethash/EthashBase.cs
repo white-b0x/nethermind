@@ -10,7 +10,7 @@ using Nethermind.Core.Extensions;
 using Nethermind.Crypto;
 using Nethermind.Int256;
 
-namespace Nethermind.Consensus.Classic;
+namespace Nethermind.Consensus.Classic.Ethash;
 
 /// <summary>
 /// Base Ethash implementation containing the core PoW algorithm constants and methods.

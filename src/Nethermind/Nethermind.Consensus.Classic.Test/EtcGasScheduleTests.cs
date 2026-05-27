@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.IO;
-using FluentAssertions;
 using Nethermind.Consensus;
 using Nethermind.Core.Specs;
 using Nethermind.Logging;
@@ -68,56 +67,56 @@ public class EtcGasScheduleTests
     public void Classic_EIP150_Activates_At_TangerineWhistle()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicTangerine - 1).IsEip150Enabled.Should().BeFalse();
-        Spec(p, ClassicTangerine).IsEip150Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicTangerine - 1).IsEip150Enabled, Is.False);
+        Assert.That(Spec(p, ClassicTangerine).IsEip150Enabled, Is.True);
     }
 
     [Test]
     public void Classic_EIP211_EIP214_Activate_At_Atlantis()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicAtlantis - 1).IsEip211Enabled.Should().BeFalse();
-        Spec(p, ClassicAtlantis).IsEip211Enabled.Should().BeTrue();
-        Spec(p, ClassicAtlantis).IsEip214Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicAtlantis - 1).IsEip211Enabled, Is.False);
+        Assert.That(Spec(p, ClassicAtlantis).IsEip211Enabled, Is.True);
+        Assert.That(Spec(p, ClassicAtlantis).IsEip214Enabled, Is.True);
     }
 
     [Test]
     public void Classic_Agharta_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicAgharta - 1).IsEip145Enabled.Should().BeFalse();
-        Spec(p, ClassicAgharta).IsEip145Enabled.Should().BeTrue();
-        Spec(p, ClassicAgharta).IsEip1014Enabled.Should().BeTrue();
-        Spec(p, ClassicAgharta).IsEip1052Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicAgharta - 1).IsEip145Enabled, Is.False);
+        Assert.That(Spec(p, ClassicAgharta).IsEip145Enabled, Is.True);
+        Assert.That(Spec(p, ClassicAgharta).IsEip1014Enabled, Is.True);
+        Assert.That(Spec(p, ClassicAgharta).IsEip1052Enabled, Is.True);
     }
 
     [Test]
     public void Classic_Phoenix_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicPhoenix - 1).IsEip1108Enabled.Should().BeFalse();
-        Spec(p, ClassicPhoenix).IsEip1108Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix).IsEip1884Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix).IsEip2028Enabled.Should().BeTrue();
-        Spec(p, ClassicPhoenix).IsEip2200Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicPhoenix - 1).IsEip1108Enabled, Is.False);
+        Assert.That(Spec(p, ClassicPhoenix).IsEip1108Enabled, Is.True);
+        Assert.That(Spec(p, ClassicPhoenix).IsEip1884Enabled, Is.True);
+        Assert.That(Spec(p, ClassicPhoenix).IsEip2028Enabled, Is.True);
+        Assert.That(Spec(p, ClassicPhoenix).IsEip2200Enabled, Is.True);
     }
 
     [Test]
     public void Classic_Magneto_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicMagneto - 1).IsEip2565Enabled.Should().BeFalse();
-        Spec(p, ClassicMagneto).IsEip2565Enabled.Should().BeTrue();
-        Spec(p, ClassicMagneto).IsEip2929Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicMagneto - 1).IsEip2565Enabled, Is.False);
+        Assert.That(Spec(p, ClassicMagneto).IsEip2565Enabled, Is.True);
+        Assert.That(Spec(p, ClassicMagneto).IsEip2929Enabled, Is.True);
     }
 
     [Test]
     public void Classic_Mystique_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicMystique - 1).IsEip3529Enabled.Should().BeFalse();
-        Spec(p, ClassicMystique).IsEip3529Enabled.Should().BeTrue();
-        Spec(p, ClassicMystique).IsEip3541Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicMystique - 1).IsEip3529Enabled, Is.False);
+        Assert.That(Spec(p, ClassicMystique).IsEip3529Enabled, Is.True);
+        Assert.That(Spec(p, ClassicMystique).IsEip3541Enabled, Is.True);
     }
 
     [Test]
@@ -125,10 +124,10 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         // EIP-1559 activates at Olympia (ECIP-1111); ApplyToReleaseSpec suppresses it until then.
-        Spec(p, ClassicMystique - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicMystique).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicSpiral).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicSpiral + 1_000_000).IsEip1559Enabled.Should().BeFalse();
+        Assert.That(Spec(p, ClassicMystique - 1).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, ClassicMystique).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, ClassicSpiral).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, ClassicSpiral + 1_000_000).IsEip1559Enabled, Is.False);
     }
 
     [Test]
@@ -136,37 +135,37 @@ public class EtcGasScheduleTests
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         // Must be 1 so Eip1559GasLimitAdjuster does not double the gas limit at Mystique.
-        Spec(p, ClassicMystique).ElasticityMultiplier.Should().Be(1);
-        Spec(p, ClassicSpiral).ElasticityMultiplier.Should().Be(1);
-        Spec(p, ClassicSpiral + 1_000_000).ElasticityMultiplier.Should().Be(1);
+        Assert.That(Spec(p, ClassicMystique).ElasticityMultiplier, Is.EqualTo(1));
+        Assert.That(Spec(p, ClassicSpiral).ElasticityMultiplier, Is.EqualTo(1));
+        Assert.That(Spec(p, ClassicSpiral + 1_000_000).ElasticityMultiplier, Is.EqualTo(1));
     }
 
     [Test]
     public void Classic_Spiral_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicSpiral - 1).IsEip3651Enabled.Should().BeFalse();
-        Spec(p, ClassicSpiral).IsEip3651Enabled.Should().BeTrue();
-        Spec(p, ClassicSpiral).IsEip3855Enabled.Should().BeTrue();
-        Spec(p, ClassicSpiral).IsEip3860Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicSpiral - 1).IsEip3651Enabled, Is.False);
+        Assert.That(Spec(p, ClassicSpiral).IsEip3651Enabled, Is.True);
+        Assert.That(Spec(p, ClassicSpiral).IsEip3855Enabled, Is.True);
+        Assert.That(Spec(p, ClassicSpiral).IsEip3860Enabled, Is.True);
     }
 
     [Test]
     public void Classic_Olympia_EIP1559_Activates_At_Sentinel()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicOlympiaSentinel - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, ClassicOlympiaSentinel).IsEip1559Enabled.Should().BeTrue();
-        Spec(p, ClassicOlympiaSentinel).ElasticityMultiplier.Should().Be(2);
+        Assert.That(Spec(p, ClassicOlympiaSentinel - 1).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, ClassicOlympiaSentinel).IsEip1559Enabled, Is.True);
+        Assert.That(Spec(p, ClassicOlympiaSentinel).ElasticityMultiplier, Is.EqualTo(2));
     }
 
     [Test]
     public void Classic_Olympia_EIP7825_EIP7623_Activate_At_Sentinel()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, ClassicOlympiaSentinel - 1).IsEip7825Enabled.Should().BeFalse();
-        Spec(p, ClassicOlympiaSentinel).IsEip7825Enabled.Should().BeTrue();
-        Spec(p, ClassicOlympiaSentinel).IsEip7623Enabled.Should().BeTrue();
+        Assert.That(Spec(p, ClassicOlympiaSentinel - 1).IsEip7825Enabled, Is.False);
+        Assert.That(Spec(p, ClassicOlympiaSentinel).IsEip7825Enabled, Is.True);
+        Assert.That(Spec(p, ClassicOlympiaSentinel).IsEip7623Enabled, Is.True);
     }
 
     // ================================================================
@@ -177,65 +176,65 @@ public class EtcGasScheduleTests
     public void Mordor_Agharta_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorAgharta - 1).IsEip145Enabled.Should().BeFalse();
-        Spec(p, MordorAgharta).IsEip145Enabled.Should().BeTrue();
-        Spec(p, MordorAgharta).IsEip1014Enabled.Should().BeTrue();
+        Assert.That(Spec(p, MordorAgharta - 1).IsEip145Enabled, Is.False);
+        Assert.That(Spec(p, MordorAgharta).IsEip145Enabled, Is.True);
+        Assert.That(Spec(p, MordorAgharta).IsEip1014Enabled, Is.True);
     }
 
     [Test]
     public void Mordor_Phoenix_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorPhoenix - 1).IsEip1108Enabled.Should().BeFalse();
-        Spec(p, MordorPhoenix).IsEip1108Enabled.Should().BeTrue();
-        Spec(p, MordorPhoenix).IsEip2028Enabled.Should().BeTrue();
-        Spec(p, MordorPhoenix).IsEip2200Enabled.Should().BeTrue();
+        Assert.That(Spec(p, MordorPhoenix - 1).IsEip1108Enabled, Is.False);
+        Assert.That(Spec(p, MordorPhoenix).IsEip1108Enabled, Is.True);
+        Assert.That(Spec(p, MordorPhoenix).IsEip2028Enabled, Is.True);
+        Assert.That(Spec(p, MordorPhoenix).IsEip2200Enabled, Is.True);
     }
 
     [Test]
     public void Mordor_Magneto_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorMagneto - 1).IsEip2929Enabled.Should().BeFalse();
-        Spec(p, MordorMagneto).IsEip2929Enabled.Should().BeTrue();
-        Spec(p, MordorMagneto).IsEip2565Enabled.Should().BeTrue();
+        Assert.That(Spec(p, MordorMagneto - 1).IsEip2929Enabled, Is.False);
+        Assert.That(Spec(p, MordorMagneto).IsEip2929Enabled, Is.True);
+        Assert.That(Spec(p, MordorMagneto).IsEip2565Enabled, Is.True);
     }
 
     [Test]
     public void Mordor_Mystique_EIP1559_Is_Suppressed_Pre_Olympia()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorMystique).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral).ElasticityMultiplier.Should().Be(1);
+        Assert.That(Spec(p, MordorMystique).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, MordorSpiral).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, MordorSpiral).ElasticityMultiplier, Is.EqualTo(1));
     }
 
     [Test]
     public void Mordor_Spiral_EIPs_Activate_At_CorrectBlock()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorSpiral - 1).IsEip3651Enabled.Should().BeFalse();
-        Spec(p, MordorSpiral).IsEip3651Enabled.Should().BeTrue();
-        Spec(p, MordorSpiral).IsEip3855Enabled.Should().BeTrue();
-        Spec(p, MordorSpiral).IsEip3860Enabled.Should().BeTrue();
+        Assert.That(Spec(p, MordorSpiral - 1).IsEip3651Enabled, Is.False);
+        Assert.That(Spec(p, MordorSpiral).IsEip3651Enabled, Is.True);
+        Assert.That(Spec(p, MordorSpiral).IsEip3855Enabled, Is.True);
+        Assert.That(Spec(p, MordorSpiral).IsEip3860Enabled, Is.True);
     }
 
     [Test]
     public void Mordor_Olympia_EIP1559_Activates_At_Sentinel()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorOlympiaSentinel - 1).IsEip1559Enabled.Should().BeFalse();
-        Spec(p, MordorOlympiaSentinel).IsEip1559Enabled.Should().BeTrue();
-        Spec(p, MordorOlympiaSentinel).ElasticityMultiplier.Should().Be(2);
+        Assert.That(Spec(p, MordorOlympiaSentinel - 1).IsEip1559Enabled, Is.False);
+        Assert.That(Spec(p, MordorOlympiaSentinel).IsEip1559Enabled, Is.True);
+        Assert.That(Spec(p, MordorOlympiaSentinel).ElasticityMultiplier, Is.EqualTo(2));
     }
 
     [Test]
     public void Mordor_Olympia_EIP7825_EIP7623_Activate_At_Sentinel()
     {
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
-        Spec(p, MordorOlympiaSentinel - 1).IsEip7825Enabled.Should().BeFalse();
-        Spec(p, MordorOlympiaSentinel).IsEip7825Enabled.Should().BeTrue();
-        Spec(p, MordorOlympiaSentinel).IsEip7623Enabled.Should().BeTrue();
+        Assert.That(Spec(p, MordorOlympiaSentinel - 1).IsEip7825Enabled, Is.False);
+        Assert.That(Spec(p, MordorOlympiaSentinel).IsEip7825Enabled, Is.True);
+        Assert.That(Spec(p, MordorOlympiaSentinel).IsEip7623Enabled, Is.True);
     }
 
     // ================================================================
@@ -248,7 +247,7 @@ public class EtcGasScheduleTests
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
         IReleaseSpec spec = Spec(p, ClassicOlympiaSentinel);
         long adjusted = Eip1559GasLimitAdjuster.AdjustGasLimit(spec, 8_000_000, ClassicOlympiaSentinel);
-        adjusted.Should().Be(8_000_000, "ETC Olympia must not apply the 2x London gas limit doubling");
+        Assert.That(adjusted, Is.EqualTo(8_000_000), "ETC Olympia must not apply the 2x London gas limit doubling");
     }
 
     [Test]
@@ -257,7 +256,7 @@ public class EtcGasScheduleTests
         ChainSpecBasedSpecProvider p = LoadSpec("mordor");
         IReleaseSpec spec = Spec(p, MordorOlympiaSentinel);
         long adjusted = Eip1559GasLimitAdjuster.AdjustGasLimit(spec, 8_000_000, MordorOlympiaSentinel);
-        adjusted.Should().Be(8_000_000, "ETC Olympia must not apply the 2x London gas limit doubling");
+        Assert.That(adjusted, Is.EqualTo(8_000_000), "ETC Olympia must not apply the 2x London gas limit doubling");
     }
 
     // ================================================================
@@ -277,20 +276,20 @@ public class EtcGasScheduleTests
         // EIP-1283 (net-metered SSTORE) was reverted by Petersburg at the same block as
         // Constantinople (Agharta). It must never be active on ETC.
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, blockNumber).IsEip1283Enabled.Should().BeFalse();
+        Assert.That(Spec(p, blockNumber).IsEip1283Enabled, Is.False);
     }
 
     [TestCaseSource(nameof(EtcMainnetCheckpoints))]
     public void Classic_EIP4895_Withdrawals_Never_Active(long blockNumber)
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, blockNumber).IsEip4895Enabled.Should().BeFalse();
+        Assert.That(Spec(p, blockNumber).IsEip4895Enabled, Is.False);
     }
 
     [TestCaseSource(nameof(EtcMainnetCheckpoints))]
     public void Classic_EIP3198_BasefeeOpcode_Suppressed_Pre_Olympia(long blockNumber)
     {
         ChainSpecBasedSpecProvider p = LoadSpec("classic");
-        Spec(p, blockNumber).IsEip3198Enabled.Should().BeFalse();
+        Assert.That(Spec(p, blockNumber).IsEip3198Enabled, Is.False);
     }
 }

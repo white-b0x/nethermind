@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Nethermind.Consensus.Classic;
+namespace Nethermind.Consensus.Classic.Ethash;
 
 internal interface IEthashDataSet : IDisposable
 {

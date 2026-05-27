@@ -332,8 +332,7 @@ public class ArrayPoolListTests
     [Test]
     public void Can_resize_totally_empty_list()
     {
-        using ArrayPoolList<int> list = new(0);
-        list.Add(1);
+        using ArrayPoolList<int> list = new(0) { 1 };
         Assert.That(list.Count, Is.EqualTo(1));
     }
 
