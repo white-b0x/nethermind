@@ -30,6 +30,7 @@ namespace Nethermind.Stats.Model
         Opera,
         Gwat,
         Tempo,
-        Swarm
+        Swarm,
+        Fukuii
     }
 }
