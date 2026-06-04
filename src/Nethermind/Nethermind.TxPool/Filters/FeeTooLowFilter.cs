@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 
 using System.Diagnostics;
+using Nethermind.Config;
 using Nethermind.Core;
 using Nethermind.Core.Specs;
 using Nethermind.Int256;
@@ -13,7 +14,7 @@ namespace Nethermind.TxPool.Filters
     /// <summary>
     /// Filters out transactions where gas fee properties were set too low.
     /// </summary>
-    internal sealed class FeeTooLowFilter(IChainHeadInfoProvider headInfo, TxDistinctSortedPool txs, TxDistinctSortedPool blobTxs, bool thereIsPriorityContract, ILogger logger) : IIncomingTxFilter
+    internal sealed class FeeTooLowFilter(IChainHeadInfoProvider headInfo, TxDistinctSortedPool txs, TxDistinctSortedPool blobTxs, bool thereIsPriorityContract, ILogger logger, IBlocksConfig? blocksConfig = null) : IIncomingTxFilter
     {
         private readonly IChainHeadSpecProvider _specProvider = headInfo.SpecProvider;
         private readonly IChainHeadInfoProvider _headInfo = headInfo;
@@ -21,6 +22,7 @@ namespace Nethermind.TxPool.Filters
         private readonly TxDistinctSortedPool _blobTxs = blobTxs;
         private readonly bool _thereIsPriorityContract = thereIsPriorityContract;
         private readonly ILogger _logger = logger;
+        private readonly IBlocksConfig? _blocksConfig = blocksConfig;
 
         public AcceptTxResult Accept(Transaction tx, ref TxFilteringState state, TxHandlingOptions handlingOptions)
         {
@@ -39,6 +41,21 @@ namespace Nethermind.TxPool.Filters
                 Metrics.PendingTransactionsTooLowFee++;
                 if (_logger.IsTrace) _logger.Trace($"Skipped adding transaction {tx.ToString("  ")}, too low payable gas price with options {handlingOptions} from {new StackTrace()}");
                 return AcceptTxResult.FeeTooLow;
+            }
+
+            // ECIP-1122: reject if effectiveTip < MIN_MINER_TIP (configurable, default = BlocksConfig.MinGasPrice).
+            // With MIN_BASE_FEE = 1 gwei, a zero-tip tx can never be included once the baseFee floor is active.
+            // Rejecting at admission prevents permanent nonce-queue deadlocks.
+            if (isEip1559Enabled && !_thereIsPriorityContract && !tx.IsFree() && _blocksConfig is not null)
+            {
+                UInt256 currentBaseFee = _headInfo.CurrentBaseFee;
+                bool txCalculatePremiumPerGas = tx.TryCalculatePremiumPerGas(currentBaseFee, out UInt256 effectiveTip);
+                if (txCalculatePremiumPerGas && effectiveTip < _blocksConfig.MinGasPrice)
+                {
+                    Metrics.PendingTransactionsTooLowFee++;
+                    if (_logger.IsTrace) _logger.Trace($"Skipped adding transaction {tx.ToString("  ")}, effectiveTip {effectiveTip} < minMinerTip {_blocksConfig.MinGasPrice}");
+                    return AcceptTxResult.FeeTooLow;
+                }
             }
 
             TxDistinctSortedPool relevantPool = (tx.SupportsBlobs ? _blobTxs : _txs);

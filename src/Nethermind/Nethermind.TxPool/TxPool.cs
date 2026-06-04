@@ -3,6 +3,7 @@
 
 using Autofac.Features.AttributeFilters;
 using CkzgLib;
+using Nethermind.Config;
 using Nethermind.Core;
 using Nethermind.Core.Caching;
 using Nethermind.Core.Collections;
@@ -110,7 +111,8 @@ namespace Nethermind.TxPool
             ITxGossipPolicy? transactionsGossipPolicy = null,
             IIncomingTxFilter? incomingTxFilter = null,
             [KeyFilter(ITxValidator.HeadTxValidatorKey)] ITxValidator? headTxValidator = null,
-            bool thereIsPriorityContract = false)
+            bool thereIsPriorityContract = false,
+            IBlocksConfig? blocksConfig = null)
         {
             _logger = logManager?.GetClassLogger<TxPool>() ?? throw new ArgumentNullException(nameof(logManager));
             _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa));
@@ -152,7 +154,7 @@ namespace Nethermind.TxPool
                 new SizeTxFilter(txPoolConfig, _logger),
                 new GasLimitTxFilter(_headInfo, txPoolConfig, logManager),
                 new PriorityFeeTooLowFilter(_headInfo, txPoolConfig, _logger),
-                new FeeTooLowFilter(_headInfo, _transactions, _blobTransactions, thereIsPriorityContract, _logger),
+                new FeeTooLowFilter(_headInfo, _transactions, _blobTransactions, thereIsPriorityContract, _logger, blocksConfig),
                 new MalformedTxFilter(_specProvider, validator, _logger)
             ];
 
