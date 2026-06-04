@@ -168,6 +168,8 @@ public class BlockHeaderTests
     [TestCase(500, 0, 10, 200, 10)]
     [TestCase(100, 100, 88, 0, 80)]
     [TestCase(100, 100, 110, 0, 110)]
+    // ECIP-1111: ETC/Mordor 1 gwei minimum floor — empty block cannot decay below InitialBaseFee
+    [TestCase(9_000_000, 1_000_000_000, 1_000_000_000, 0, 1_000_000_000)]
     public void Eip_1559_CalculateBaseFee(long gasTarget, long baseFee, long expectedBaseFee, long gasUsed, long? minimalBaseFee = null)
     {
         IReleaseSpec releaseSpec = ReleaseSpecSubstitute.Create();
