@@ -16,6 +16,7 @@ using Nethermind.Consensus.Classic.Mining;
 using Nethermind.Consensus.Ethash;
 using Nethermind.Consensus.Rewards;
 using Nethermind.Consensus;
+using Nethermind.Consensus.Validators;
 using Nethermind.Core;
 using Nethermind.Core.Specs;
 using Nethermind.Crypto;
@@ -210,6 +211,16 @@ public class EthereumClassicModule(
 
         builder.Register(_ => new OlympiaGasLimitCalculator(olympiaTransition))
             .As<IGasLimitCalculator>()
+            .SingleInstance();
+
+        // ECIP-1122 SHOULD: override HeaderValidator to warn when peers mine below the gas floor.
+        builder.Register(ctx => new EtcHeaderValidator(
+                ctx.Resolve<IBlockTree>(),
+                ctx.Resolve<ISealValidator>(),
+                ctx.Resolve<ISpecProvider>(),
+                ctx.Resolve<ILogManager>(),
+                olympiaTransition))
+            .As<IHeaderValidator>()
             .SingleInstance();
 
         if (miningMode == EtcMiningMode.Remote)

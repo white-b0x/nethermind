@@ -43,7 +43,7 @@
                 "eip2935Transition": "0xDE0B6B3A7640000",
                 "eip7702Transition": "0xDE0B6B3A7640000",
                 "eip7934Transition": "0xDE0B6B3A7640000",
-                "olympiaTreasuryAddress": "0xd6165F3aF4281037bce810621F62B43077Fb0e37",
+                "olympiaTreasuryAddress": "0x60d0A7394f9Cd5C469f9F5Ec4F9C803F5294d79b",
                 "olympiaTransition": "0xDE0B6B3A7640000",
                 "eip1559BaseFeeMinValueTransition": "0xDE0B6B3A7640000",
                 "eip1559BaseFeeMinValue": "0x3b9aca00"
