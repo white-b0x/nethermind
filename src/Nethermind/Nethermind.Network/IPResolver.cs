@@ -68,6 +68,7 @@ public class IPResolver(INetworkConfig networkConfig, ILogManager logManager) : 
         IEnumerable<IIPSource> GetIPSources()
         {
             yield return new NetworkConfigExternalIPSource(_networkConfig, _logManager);
+            yield return new UPnPIPSource(_logManager);
             yield return new StunIPSource(_logManager);
             yield return new WebIPSource("https://icanhazip.com", _logManager);
             yield return new WebIPSource("https://checkip.amazonaws.com", _logManager);
