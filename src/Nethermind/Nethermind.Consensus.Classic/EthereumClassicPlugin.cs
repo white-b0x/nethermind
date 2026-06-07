@@ -211,13 +211,7 @@ public class EthereumClassicModule(
             .As<IGasLimitCalculator>()
             .SingleInstance();
 
-        // ECIP-1122 SHOULD: override HeaderValidator to warn when peers mine below the gas floor.
-        builder.Register(ctx => new EtcHeaderValidator(
-                ctx.Resolve<IBlockTree>(),
-                ctx.Resolve<ISealValidator>(),
-                ctx.Resolve<ISpecProvider>(),
-                ctx.Resolve<ILogManager>(),
-                olympiaTransition))
+        builder.RegisterType<HeaderValidator>()
             .As<IHeaderValidator>()
             .SingleInstance();
 
