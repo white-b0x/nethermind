@@ -244,9 +244,7 @@ public class EncodingTest
     [Test]
     public void Encode_decode_and_merkleize_array_pool_list()
     {
-        using ArrayPoolList<ulong> items = new(4);
-        items.Add(1);
-        items.Add(2);
+        using ArrayPoolList<ulong> items = new(4) { 1, 2 };
         ArrayPoolListContainer container = new() { Items = items };
 
         byte[] encoded = Encode(container);

@@ -2169,8 +2169,7 @@ public class BlockTreeTests
         BlockTree blockTree = BuildBlockTree();
 
         BlockHeader currentHeader = Build.A.BlockHeader.WithTotalDifficulty(1).WithDifficulty(1).WithNumber(1).TestObject;
-        using ArrayPoolList<BlockHeader> batch = new(1);
-        batch.Add(currentHeader);
+        using ArrayPoolList<BlockHeader> batch = new(1) { currentHeader };
 
         for (int i = 0; i < 100; i++)
         {

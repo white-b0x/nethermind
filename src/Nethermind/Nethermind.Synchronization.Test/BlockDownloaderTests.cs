@@ -209,9 +209,7 @@ public partial class BlockDownloaderTests
     [Test]
     public async Task Return_Null_On_InConsistentHeaderSequence()
     {
-        using ArrayPoolList<BlockHeader?> headers = new(1);
-        headers.Add(Build.A.EmptyBlockHeader);
-        headers.Add(Build.A.EmptyBlockHeader);
+        using ArrayPoolList<BlockHeader?> headers = new(1) { Build.A.EmptyBlockHeader, Build.A.EmptyBlockHeader };
 
         IForwardHeaderProvider mockForwardHeaderProvider = Substitute.For<IForwardHeaderProvider>();
         mockForwardHeaderProvider.GetBlockHeaders(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<CancellationToken>())
