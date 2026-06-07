@@ -104,20 +104,18 @@ public class EthereumClassicPlugin(
 
     public IBlockProducer InitBlockProducer()
     {
-        (IApiWithBlockchain getFromApi, IApiWithBlockchain _) = _nethermindApi!.ForProducer;
-
-        IBlockProducerEnv env = getFromApi.BlockProducerEnvFactory.CreatePersistent();
+        IBlockProducerEnv env = _nethermindApi!.BlockProducerEnvFactory.CreatePersistent();
         return new EtchashBlockProducer(
             env.TxSource,
             env.ChainProcessor,
             env.ReadOnlyStateProvider,
-            getFromApi.BlockTree,
-            getFromApi.Timestamper,
-            getFromApi.SpecProvider,
-            getFromApi.Config<IBlocksConfig>(),
+            _nethermindApi.BlockTree,
+            _nethermindApi.Timestamper,
+            _nethermindApi.SpecProvider,
+            _nethermindApi.Config<IBlocksConfig>(),
             _nethermindApi.Context.Resolve<ISealer>(),
             _nethermindApi.Context.Resolve<IDifficultyCalculator>(),
-            getFromApi.LogManager);
+            _nethermindApi.LogManager);
     }
 
     public IBlockProducerRunner InitBlockProducerRunner(IBlockProducer blockProducer) => new StandardBlockProducerRunner(
