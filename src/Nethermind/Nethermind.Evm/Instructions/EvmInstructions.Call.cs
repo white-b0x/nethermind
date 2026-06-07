@@ -330,7 +330,7 @@ public static partial class EvmInstructions
             return EvmExceptionType.None;
         }
 
-        // Jump forward to be unpredicted by the branch predictor.
+    // Jump forward to be unpredicted by the branch predictor.
     StackUnderflow:
         return EvmExceptionType.StackUnderflow;
     OutOfGas:
@@ -371,7 +371,7 @@ public static partial class EvmInstructions
         vm.ReturnData = returnData.ToArray();
 
         return EvmExceptionType.None;
-        // Jump forward to be unpredicted by the branch predictor.
+    // Jump forward to be unpredicted by the branch predictor.
     OutOfGas:
         return EvmExceptionType.OutOfGas;
     StackUnderflow:

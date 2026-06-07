@@ -74,9 +74,9 @@ public class EtcHeaderValidatorTests
     // Target transition is at the Olympia block (inclusive)
     // ------------------------------------------------------------------
 
-    [TestCase(OlympiaBlock - 1L, SpiralGasLimit,  TestName = "OneBlockBeforeOlympia_Spiral")]
-    [TestCase(OlympiaBlock,      OlympiaGasLimit,  TestName = "AtOlympia_Olympia")]
-    [TestCase(OlympiaBlock + 1L, OlympiaGasLimit,  TestName = "OneBlockAfterOlympia_Olympia")]
+    [TestCase(OlympiaBlock - 1L, SpiralGasLimit, TestName = "OneBlockBeforeOlympia_Spiral")]
+    [TestCase(OlympiaBlock, OlympiaGasLimit, TestName = "AtOlympia_Olympia")]
+    [TestCase(OlympiaBlock + 1L, OlympiaGasLimit, TestName = "OneBlockAfterOlympia_Olympia")]
     public void TargetTransitionAt_OlympiaBlock(long blockNumber, long expectedLimit) =>
         Assert.That(EtcHeaderValidator.SelectGasLimit(blockNumber, OlympiaBlock), Is.EqualTo(expectedLimit));
 

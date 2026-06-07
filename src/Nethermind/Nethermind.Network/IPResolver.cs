@@ -68,11 +68,11 @@ public class IPResolver(INetworkConfig networkConfig, ILogManager logManager) : 
         IEnumerable<IIPSource> GetIPSources()
         {
             yield return new NetworkConfigExternalIPSource(_networkConfig, _logManager);
-            yield return new WebIPSource("http://ipv4.icanhazip.com", _logManager);
-            yield return new WebIPSource("http://ipv4bot.whatismyipaddress.com", _logManager);
-            yield return new WebIPSource("http://checkip.amazonaws.com", _logManager);
-            yield return new WebIPSource("http://ipinfo.io/ip", _logManager);
-            yield return new WebIPSource("http://api.ipify.org", _logManager);
+            yield return new StunIPSource(_logManager);
+            yield return new WebIPSource("https://icanhazip.com", _logManager);
+            yield return new WebIPSource("https://checkip.amazonaws.com", _logManager);
+            yield return new WebIPSource("https://api4.ipify.org", _logManager);
+            yield return new WebIPSource("https://4.ident.me", _logManager);
         }
 
         try
