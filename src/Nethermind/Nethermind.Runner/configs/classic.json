@@ -22,7 +22,7 @@
     "P2PPort": 30307,
     "DiscoveryPort": 30307,
     "MaxActivePeers": 50,
-    "DiscoveryDns": "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.etcdisco.net"
+    "DiscoveryDns": "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.etcdisco.net,enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.classic.blockd.info"
   },
   "Metrics": {
     "NodeName": "Ethereum Classic"

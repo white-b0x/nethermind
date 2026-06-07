@@ -22,7 +22,7 @@
     "P2PPort": 30308,
     "DiscoveryPort": 30308,
     "MaxActivePeers": 50,
-    "DiscoveryDns": "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.blockd.info"
+    "DiscoveryDns": "enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.etcdisco.net,enrtree://AJE62Q4DUX4QMMXEHCSSCSC65TDHZYSMONSD64P3WULVLSF6MRQ3K@all.mordor.blockd.info"
   },
   "Metrics": {
     "NodeName": "Mordor Testnet"

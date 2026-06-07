@@ -19,69 +19,72 @@ public class EnrDiscovery : INodeSource
     private readonly IEnrRecordParser _parser;
     private readonly ILogger _logger;
     private readonly EnrTreeCrawler _crawler;
-    private readonly string _domain;
+    private readonly string[] _domains;
 
     public EnrDiscovery(IEnrRecordParser parser, INetworkConfig networkConfig, ILogManager logManager)
     {
         _parser = parser;
         _logger = logManager.GetClassLogger<EnrDiscovery>();
         _crawler = new EnrTreeCrawler(_logger);
-        _domain = networkConfig.DiscoveryDns!;
+        // Supports comma-separated list of DNS discovery URLs for fallback redundancy.
+        // Each domain is crawled in order; a DNS error on one does not abort the others.
+        _domains = (networkConfig.DiscoveryDns ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     public async IAsyncEnumerable<Node> DiscoverNodes([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(_domain)) yield break;
-
-        IByteBuffer buffer = NethermindBuffers.Default.Buffer();
-        await using ConfiguredCancelableAsyncEnumerable<string>.Enumerator enumerator = _crawler.SearchTree(_domain, cancellationToken)
-            .WithCancellation(cancellationToken)
-            .GetAsyncEnumerator();
-
-        try
+        foreach (string domain in _domains)
         {
-            // Need to loop manually because of te exception handling
-            while (true)
+            if (cancellationToken.IsCancellationRequested) yield break;
+
+            IByteBuffer buffer = NethermindBuffers.Default.Buffer();
+            await using ConfiguredCancelableAsyncEnumerable<string>.Enumerator enumerator = _crawler.SearchTree(domain, cancellationToken)
+                .WithCancellation(cancellationToken)
+                .GetAsyncEnumerator();
+
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                bool hasNext = false;
-                try
+                // Need to loop manually because of the exception handling
+                while (true)
                 {
-                    hasNext = await enumerator.MoveNextAsync();
-                }
-                catch (DnsResponseException dnsException)
-                {
-                    if (_logger.IsWarn) _logger.Warn($"Searching the tree of \"{_domain}\" had an error: {dnsException.DnsError}");
-                    yield break;
-                }
+                    cancellationToken.ThrowIfCancellationRequested();
+                    bool hasNext = false;
+                    try
+                    {
+                        hasNext = await enumerator.MoveNextAsync();
+                    }
+                    catch (DnsResponseException dnsException)
+                    {
+                        if (_logger.IsWarn) _logger.Warn($"Searching the tree of \"{domain}\" had an error: {dnsException.DnsError}");
+                        break; // continue to next domain
+                    }
 
-                if (!hasNext)
-                {
-                    yield break;
-                }
+                    if (!hasNext) break;
 
-                string nodeRecordText = enumerator.Current;
-                Node? node = null;
-                try
-                {
-                    NodeRecord nodeRecord = _parser.ParseRecord(nodeRecordText, buffer);
-                    node = CreateNode(nodeRecord);
-                }
-                catch (Exception e)
-                {
-                    _logger.DebugError($"failed to parse enr record {nodeRecordText}", e);
-                }
+                    string nodeRecordText = enumerator.Current;
+                    Node? node = null;
+                    try
+                    {
+                        NodeRecord nodeRecord = _parser.ParseRecord(nodeRecordText, buffer);
+                        node = CreateNode(nodeRecord);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.DebugError($"failed to parse enr record {nodeRecordText}", e);
+                    }
 
-                if (node is not null)
-                {
-                    // here could add network info to the node
-                    yield return node;
+                    if (node is not null)
+                    {
+                        // here could add network info to the node
+                        yield return node;
+                    }
                 }
             }
-        }
-        finally
-        {
-            buffer.Release();
+            finally
+            {
+                buffer.Release();
+            }
         }
     }
 
