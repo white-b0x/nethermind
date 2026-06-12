@@ -53,7 +53,7 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
     /// <summary>Block at which Olympia activates (ECIP-1111/1112/1121). Sentinel: 1e18 (not yet scheduled).</summary>
     public long? OlympiaTransition { get; set; }
 
-    /// <summary>Treasury address for ECIP-1112 basefee redirect. Canonical: 0xd6165F3aF4281037bce810621F62B43077Fb0e37.</summary>
+    /// <summary>Treasury address for ECIP-1112 basefee redirect. Canonical: 0x60d0A7394f9Cd5C469f9F5Ec4F9C803F5294d79b.</summary>
     public Address? OlympiaTreasuryAddress { get; set; }
 
     /// <remarks>
@@ -148,5 +148,11 @@ public class EtchashChainSpecEngineParameters : EthashChainSpecEngineParameters,
         {
             spec.Eip1559TransitionBlock = long.MaxValue;
         }
+
+        // ECIP-1111: redirect baseFee revenue to the Olympia treasury via FeeCollector.
+        // ChainSpecBasedSpecProvider leaves FeeCollector null for ETC (no Eip1559FeeCollectorTransition
+        // or Eip4844FeeCollectorTransitionTimestamp is configured). This is the sole setter.
+        if (OlympiaTransition is not null && startBlock >= OlympiaTransition.Value && OlympiaTreasuryAddress is not null)
+            spec.FeeCollector = OlympiaTreasuryAddress;
     }
 }
