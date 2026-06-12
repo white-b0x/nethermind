@@ -57,8 +57,8 @@ public class SnapshotRepository(ILogManager logManager) : ISnapshotRepository
     private SnapshotPooledList AssembleSnapshotsBfs(in StateId baseBlock, long minBlockNumber, StateId? exactTarget, int estimatedSize)
     {
         using ArrayPoolListRef<(Snapshot Snapshot, int ParentIndex)> visited = new(estimatedSize);
-        using PooledQueue<(StateId Current, int ParentIndex)> queue = new();
-        using PooledSet<StateId> seen = new();
+        using PooledQueue<(StateId Current, int ParentIndex)> queue = [];
+        using PooledSet<StateId> seen = [];
         try
         {
             queue.Enqueue((baseBlock, -1));
@@ -283,8 +283,8 @@ public class SnapshotRepository(ILogManager logManager) : ISnapshotRepository
         long batchStart = canonicalStateId.BlockNumber + 1;
         int totalPruned = 0;
 
-        using PooledStack<StateId> stack = new();
-        using PooledSet<StateId> seen = new();
+        using PooledStack<StateId> stack = [];
+        using PooledSet<StateId> seen = [];
 
         while (batchStart <= maxBlock)
         {
