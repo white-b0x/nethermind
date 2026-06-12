@@ -10,7 +10,6 @@ using Nethermind.Blockchain.Synchronization;
 using Nethermind.Core;
 using Nethermind.Core.Specs;
 using Nethermind.Db;
-using Nethermind.Db.Blooms;
 using Nethermind.Int256;
 using Nethermind.Logging;
 using Nethermind.State.Repositories;
@@ -29,11 +28,10 @@ internal class EtcBlockTree(
     IBlockAccessListStore? balStore,
     IChainLevelInfoRepository? chainLevelInfoRepository,
     ISpecProvider? specProvider,
-    IBloomStorage? bloomStorage,
     ISyncConfig? syncConfig,
     ILogManager? logManager,
     long genesisBlockNumber = 0) : BlockTree(blockStore, headerDb, blockInfoDb, metadataDb, badBlockStore,
-        balStore, chainLevelInfoRepository, specProvider, bloomStorage, syncConfig,
+        balStore, chainLevelInfoRepository, specProvider, syncConfig,
         logManager, genesisBlockNumber)
 {
     private volatile bool _messEnabled;
